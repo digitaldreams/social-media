@@ -1,0 +1,29 @@
+{
+    "name": "digitaldream/social-media",
+    "type": "library",
+    "description": "Social Media login and registration are now common in almost all website. But its very hard to find a solution which support Facebook, Google, Linkedin and Twitter in Object Oriented PHP. This package can be used in any PHP framework",
+    "keywords": ["Facebook Login/Signup", "Google Login/signup", "LinkedIn Login/Signup"],
+    "homepage": "https://github.com/digitaldreams/social-media",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Tuhin Bepari",
+            "email": "digitaldreams40@gmail.com",
+            "homepage": "http://rpms.ieltsmaster.net",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=5.5.0",
+        "facebook/php-sdk-v4": "~5.0"
+
+    },
+    "require-dev": {
+        "google/apiclient": "1.0.*@beta"
+    },
+    "autoload": {
+        "psr-4": {
+            "SocialMedia\\": "src/social-media/"
+        }
+    }
+}
