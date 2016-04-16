@@ -23,5 +23,7 @@
         "psr-4": {
             "SocialMedia\\": "src/social-media/"
         }
-    }
+    },
+    "minimum-stability" : "dev",
+    "prefer-stable": true
 }
