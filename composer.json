@@ -16,8 +16,10 @@
     "require": {
         "php": ">=5.5.0",
         "facebook/php-sdk-v4": "~5.0",
-         "google/apiclient": "^2.0.0@RC"
 
+    },
+    "require-dev": {
+        "google/apiclient":"dev-master"
     },
     "autoload": {
         "psr-4": {
