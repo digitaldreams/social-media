@@ -2,7 +2,7 @@
 
 namespace SocialMedia;
 
-class LinkedIn extends SocialMedia {
+class LinkedIn extends SocialMedia implements SocialMediaInterface{
 
     private $_state = null;
     private $_access_token_expires = null;
@@ -109,6 +109,8 @@ class LinkedIn extends SocialMedia {
 
         $this->setAccessToken($data['access_token']);
         $this->_access_token_expires = $data['expires_in'];
+
+        return $this;
     }
 
     /**
@@ -285,7 +287,7 @@ class LinkedIn extends SocialMedia {
     public function fetchUserInfo() {
         $getAllFields = $this->getFields();
         $this->user = $info = $this->get('/people/~:(' . $getAllFields . ')');
-        return $this->user;
+        return $this;
     }
 
     public function handler() {

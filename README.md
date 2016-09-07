@@ -5,7 +5,7 @@ Social Media login and registration are now common in almost all website. But it
 
   "require-dev": {
   
-     "digitaldream/social-media": "1.0.x"
+     "digitaldream/social-media": "1.0.*"
         
 }
 ##Uses

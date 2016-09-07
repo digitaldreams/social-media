@@ -2,7 +2,7 @@
 
 namespace SocialMedia;
 
-class Google extends SocialMedia {
+class Google extends SocialMedia implements SocialMediaInterface{
 
     /**
      * Main class for Google Oauth
@@ -122,7 +122,7 @@ class Google extends SocialMedia {
         }
         $guser = $this->service->userinfo;
         $this->user = get_object_vars($guser->get());
-        return $this->user;
+        return $this;
     }
 
     /**

@@ -7,7 +7,7 @@ namespace SocialMedia;
  *
  * @author Tuhin
  */
-class Facebook extends SocialMedia {
+class Facebook extends SocialMedia implements SocialMediaInterface{
 
     public $fb;
     public $permissions = ['public_profile', 'email'];
@@ -53,7 +53,9 @@ class Facebook extends SocialMedia {
 
             // Now you can redirect to another page and use the
             // access token from $_SESSION['facebook_access_token']
+
         }
+        return $this;
     }
 
     public function fetchUserInfo() {
@@ -70,6 +72,7 @@ class Facebook extends SocialMedia {
 
             throw new \Exception('Facebook SDK returned an error: ' . $e->getMessage(), $e->getCode(), $e);
         }
+        return $this;
     }
 
     public function handler() {

@@ -13,12 +13,12 @@ namespace SocialMedia;
  *
  * @author Tuhin
  */
-abstract class SocialMedia {
-
+class SocialMedia
+{
     const FACEBOOK = 'facebook';
-    const GOOGLE = 'google';
+    const GOOGLE   = 'google';
     const LINKEDIN = 'linkedin';
-    const TWITTER = 'twitter';
+    const TWITTER  = 'twitter';
 
     public $user;
     public $loginUrl;
@@ -37,7 +37,8 @@ abstract class SocialMedia {
     public $config;
     protected $access_token;
 
-    public function setConfig(array $config) {
+    public function setConfig(array $config)
+    {
         try {
             $this->config = new \stdClass();
             if (!isset($config['app_id']) || empty($config['app_id'])) {
@@ -54,33 +55,35 @@ abstract class SocialMedia {
                 throw new \Exception('permissions is required');
             }
 
-            $this->config->app_id = $config['app_id'];
-            $this->config->app_secret = $config['app_secret'];
+            $this->config->app_id       = $config['app_id'];
+            $this->config->app_secret   = $config['app_secret'];
             $this->config->redirect_url = $config['redirect_url'];
-            $this->config->permissions = $config['permissions'];
+            $this->config->permissions  = $config['permissions'];
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage(), $ex->getCode(), $ex);
         }
     }
 
-    public function getUser() {
+    public function getUser()
+    {
         return $this->user;
     }
 
-    public abstract function getLoginUrl();
-
-    public function getAccessToken() {
+    public function getAccessToken()
+    {
         return $this->access_token;
     }
 
-    public function setAccessToken($token) {
+    public function setAccessToken($token)
+    {
         $this->access_token = $token;
         $this->saveAccessToken($token);
     }
 
-    public function hasAccessToken() {
-        if (isset($_SESSION[$this->media . '_access_token']) && !empty($_SESSION[$this->media . '_access_token'])) {
-            return $_SESSION[$this->media . '_access_token'];
+    public function hasAccessToken()
+    {
+        if (isset($_SESSION[$this->media.'_access_token']) && !empty($_SESSION[$this->media.'_access_token'])) {
+            return $_SESSION[$this->media.'_access_token'];
         }
         return FALSE;
     }
@@ -89,13 +92,27 @@ abstract class SocialMedia {
      * Save Access Token for further use. Save this to a permanent storage so that when web page reload or change then it can be retrivable 
      * @param string $accessToken Access Token 
      */
-    public function saveAccessToken($token) {
-        $_SESSION[$this->media . '_access_token'] = $token;
+    public function saveAccessToken($token)
+    {
+        $_SESSION[$this->media.'_access_token'] = $token;
     }
 
-    public abstract function response();
+    public static function init($config, $media)
+    {
+        switch ($media) {
+            case SocialMedia::FACEBOOK:
+                return new Facebook($config);
+                break;
+            case SocialMedia::GOOGLE:
+                return new Google($config);
+                break;
+            case SocialMedia::LINKEDIN:
+                return new LinkedIn($config);
+                break;
+            default :
+                throw new \Exception('Unsupported Social Media.');
+                break;
+        }
+    }
 
-    public abstract function fetchUserInfo();
-
-    public abstract function handler();
 }
