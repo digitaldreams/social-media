@@ -5,7 +5,7 @@ Social Media login and registration are now common in almost all website. But it
 
   "require-dev": {
   
-     "digitaldream/social-media": "1.0.0"
+     "digitaldream/social-media": "1.0.x"
         
 }
 ##Uses
@@ -14,7 +14,7 @@ Social Media login and registration are now common in almost all website. But it
 
 <?php
 
-  $facebook = new SocialMedia\Facebook([
+  $facebook = new \SocialMedia\Facebook([
   
             'app_id' => 'xxxxxxxxxxxxxxxxxxxxx',
             
@@ -34,7 +34,7 @@ Social Media login and registration are now common in almost all website. But it
 
    try {
    
-         $facebook = new SocialMedia\Facebook([
+         $facebook = new \SocialMedia\Facebook([
          
               'app_id' => 'xxxxxxxxxxxxxxxxxxx',
               
