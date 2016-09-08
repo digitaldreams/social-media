@@ -210,18 +210,18 @@ class SocialMedia
     {
         try {
             if ($token = $this->hasAccessToken()) {
-                print_r($token);
-                exit();
+                $this->access_token = $token;
                 return $this->setTokenToHandler($token)->fetchUserInfo();
             }
             if (isset($_REQUEST['code']) && !empty($_REQUEST['code'])) {
 
-                return $this->response()->fetchUserInfo();
+                $this->response()->fetchUserInfo();
+                return $this;
             } else {
                 return false;
             };
         } catch (\Exception $ex) {
-            // $this->forget();
+            $this->forget();
             throw new \Exception($ex->getMessage(), $ex->getCode(), $ex);
         }
     }
