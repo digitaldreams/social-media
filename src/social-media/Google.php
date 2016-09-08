@@ -198,4 +198,10 @@ class Google extends SocialMedia implements SocialMediaInterface
     {
         return $this->client;
     }
+
+    public function setTokenToHandler($token)
+    {
+        $this->client->setAccessToken($token);
+        return $this;
+    }
 }

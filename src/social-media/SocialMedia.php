@@ -153,4 +153,20 @@ class SocialMedia
                 break;
         }
     }
+
+    public static function call()
+    {
+        try {
+            if ($token = $this->hasAccessToken()) {
+
+                return $this->setTokenToHandler($token)->fetchUserInfo();
+            } elseif (isset($_REQUEST['code']) && !empty($_REQUEST['code'])) {
+
+                return $this->response()->fetchUserInfo();
+            }
+            return false;
+        } catch (\Exception $ex) {
+            throw new \Exception($ex->getMessage(), $ex->getCode(), $ex);
+        }
+    }
 }

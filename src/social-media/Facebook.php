@@ -83,6 +83,12 @@ class Facebook extends SocialMedia implements SocialMediaInterface
         return $this;
     }
 
+    public function setTokenToHandler($token)
+    {
+        $this->fb->setDefaultAccessToken($token);
+        return $this;
+    }
+
     public function handler()
     {
         return $this->fb;

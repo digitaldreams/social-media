@@ -14,11 +14,13 @@ namespace SocialMedia;
 interface SocialMediaInterface
 {
 
-    public abstract function getLoginUrl();
+    public function getLoginUrl();
 
-    public abstract function response();
+    public function response();
 
-    public abstract function fetchUserInfo();
+    public function fetchUserInfo();
 
-    public abstract function handler();
+    public function handler();
+
+    public function setTokenToHandler($token);
 }

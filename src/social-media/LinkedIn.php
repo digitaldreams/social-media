@@ -320,4 +320,10 @@ class LinkedIn extends SocialMedia implements SocialMediaInterface
     {
         return $this;
     }
+
+    public function setTokenToHandler($token)
+    {
+        $this->setAccessToken($token);
+        return $this;
+    }
 }
