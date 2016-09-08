@@ -20,9 +20,29 @@ class SocialMedia
     const LINKEDIN = 'linkedin';
     const TWITTER  = 'twitter';
 
+    /**
+     *
+     * @var 
+     */
     public $user;
+
+    /**
+     *
+     * @var URL
+     */
     public $loginUrl;
+
+    /**
+     *
+     * @var string
+     */
     public $media;
+
+    /**
+     *
+     * @var Model
+     */
+    public $model;
 
     /**
      *
@@ -55,6 +75,12 @@ class SocialMedia
                 throw new \Exception('permissions is required');
             }
 
+            if (isset($config['model']) && !empty($config['model']) && class_exists($config['model'])) {
+                $this->model = new $config['model'];
+            } else {
+                $this->model = new Model($this->media);
+            }
+
             $this->config->app_id       = $config['app_id'];
             $this->config->app_secret   = $config['app_secret'];
             $this->config->redirect_url = $config['redirect_url'];
@@ -71,21 +97,18 @@ class SocialMedia
 
     public function getAccessToken()
     {
-        return $this->access_token;
+        return $this->model->getAccessToken();
     }
 
     public function setAccessToken($token)
     {
+        $this->model->saveAccessToken($token);
         $this->access_token = $token;
-        $this->saveAccessToken($token);
     }
 
     public function hasAccessToken()
     {
-        if (isset($_SESSION[$this->media.'_access_token']) && !empty($_SESSION[$this->media.'_access_token'])) {
-            return $_SESSION[$this->media.'_access_token'];
-        }
-        return FALSE;
+        return $this->model->hasAccessToken();
     }
 
     /**
@@ -94,10 +117,26 @@ class SocialMedia
      */
     public function saveAccessToken($token)
     {
-        $_SESSION[$this->media.'_access_token'] = $token;
+        return $this->model->saveAccessToken($token);
     }
 
-    public static function init($config, $media)
+    public function success()
+    {
+        if (method_exists($this->model, 'smSuccess')) {
+            return $this->model->smSuccess($this);
+        }
+        return false;
+    }
+
+    public function fail()
+    {
+        if (method_exists($this->model, 'smFail')) {
+            return $this->model->smFail($this);
+        }
+        return false;
+    }
+
+    public static function make($config, $media)
     {
         switch ($media) {
             case SocialMedia::FACEBOOK:
@@ -114,5 +153,4 @@ class SocialMedia
                 break;
         }
     }
-
 }

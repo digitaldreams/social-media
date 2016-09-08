@@ -2,8 +2,8 @@
 
 namespace SocialMedia;
 
-class Google extends SocialMedia implements SocialMediaInterface{
-
+class Google extends SocialMedia implements SocialMediaInterface
+{
     /**
      * Main class for Google Oauth
      *  
@@ -41,28 +41,32 @@ class Google extends SocialMedia implements SocialMediaInterface{
      */
     public $error = [];
 
-    public function __construct(array $config = []) {
+    public function __construct(array $config = [])
+    {
+        $this->media = static::GOOGLE;
         $this->setConfig($config);
         $this->initClient();
-        $this->media = static::GOOGLE;
     }
 
     /**
      * Get Google Client object
      * @return Google_Client
      */
-    public function getClient() {
+    public function getClient()
+    {
         return $this->client;
     }
 
-    public function getLoginUrl() {
+    public function getLoginUrl()
+    {
         return $this->getClient()->createAuthUrl();
     }
 
     /**
      * Create Google_client Class Object 
      */
-    protected function initClient() {
+    protected function initClient()
+    {
 
         // $op=new \Google_Client();
         $this->client = new \Google_Client();
@@ -77,7 +81,8 @@ class Google extends SocialMedia implements SocialMediaInterface{
     /**
      * Check whetehr user is authenticated
      */
-    public function isAuthenticated() {
+    public function isAuthenticated()
+    {
         $accessToken = $this->getAccessToken();
 
         if (!empty($accessToken)) {
@@ -91,7 +96,8 @@ class Google extends SocialMedia implements SocialMediaInterface{
      * Authenticate a user  when code is return from Google
      * @return \GoogleAuth
      */
-    public function response() {
+    public function response()
+    {
         $code = $this->getCode();
 
         if (!empty($code)) {
@@ -115,12 +121,13 @@ class Google extends SocialMedia implements SocialMediaInterface{
      *
      * @return boolean if not authenticated user otherwise return Google_Service_Oauth2_Userinfoplus Object
      */
-    public function fetchUserInfo() {
+    public function fetchUserInfo()
+    {
         if ($this->isAuthenticated() === FALSE) {
             $this->setError('No authenticated user found');
             return FALSE;
         }
-        $guser = $this->service->userinfo;
+        $guser      = $this->service->userinfo;
         $this->user = get_object_vars($guser->get());
         return $this;
     }
@@ -129,7 +136,8 @@ class Google extends SocialMedia implements SocialMediaInterface{
      * Get Code from your storage.
      * @return type
      */
-    public function getCode() {
+    public function getCode()
+    {
         return isset($_GET['code']) ? $_GET['code'] : '';
     }
 
@@ -139,7 +147,8 @@ class Google extends SocialMedia implements SocialMediaInterface{
      * @param string $code 
      * @return \GoogleAuth
      */
-    public function setCode($code) {
+    public function setCode($code)
+    {
         $this->code = $code;
         return $this;
     }
@@ -148,7 +157,8 @@ class Google extends SocialMedia implements SocialMediaInterface{
      * Check whether access token is expired
      * @return boolean 
      */
-    public function isExpired() {
+    public function isExpired()
+    {
         return $this->getClient()->isAccessTokenExpired();
     }
 
@@ -157,7 +167,8 @@ class Google extends SocialMedia implements SocialMediaInterface{
      * @param string $message error message
      * @param string/integer $index Index of the error message. Optional parameter
      */
-    public function setError($message, $index = '') {
+    public function setError($message, $index = '')
+    {
         if (!empty($index)) {
             $this->error[$index] = $message;
         } else {
@@ -169,7 +180,8 @@ class Google extends SocialMedia implements SocialMediaInterface{
      * Check whether any error occured or not 
      * @return boolean
      */
-    public function hasError() {
+    public function hasError()
+    {
         return count($this->error) > 0 ? TRUE : FALSE;
     }
 
@@ -177,12 +189,13 @@ class Google extends SocialMedia implements SocialMediaInterface{
      * Return errors
      * @return array if errors occured then it will be fill with error otherwise it will be empty
      */
-    public function getError() {
+    public function getError()
+    {
         return $this->error;
     }
 
-    public function handler() {
+    public function handler()
+    {
         return $this->client;
     }
-
 }

@@ -2,37 +2,39 @@
 
 namespace SocialMedia;
 
-class LinkedIn extends SocialMedia implements SocialMediaInterface{
-
-    private $_state = null;
+class LinkedIn extends SocialMedia implements SocialMediaInterface
+{
+    private $_state                = null;
     private $_access_token_expires = null;
-    private $_debug_info = null;
-    private $_curl_handle = null;
+    private $_debug_info           = null;
+    private $_curl_handle          = null;
 
-    const API_BASE = 'https://api.linkedin.com/v1';
-    const OAUTH_BASE = 'https://www.linkedin.com/uas/oauth2';
-    const SCOPE_BASIC_PROFILE = 'r_basicprofile'; // Name, photo, headline, and current positions
-    const SCOPE_FULL_PROFILE = 'r_fullprofile'; // Full profile including experience, education, skills, and recommendations
-    const SCOPE_EMAIL_ADDRESS = 'r_emailaddress'; // The primary email address you use for your LinkedIn account
-    const SCOPE_NETWORK = 'r_network'; // Your 1st and 2nd degree connections
-    const SCOPE_CONTACT_INFO = 'r_contactinfo'; // Address, phone number, and bound accounts
+    const API_BASE                 = 'https://api.linkedin.com/v1';
+    const OAUTH_BASE               = 'https://www.linkedin.com/uas/oauth2';
+    const SCOPE_BASIC_PROFILE      = 'r_basicprofile'; // Name, photo, headline, and current positions
+    const SCOPE_FULL_PROFILE       = 'r_fullprofile'; // Full profile including experience, education, skills, and recommendations
+    const SCOPE_EMAIL_ADDRESS      = 'r_emailaddress'; // The primary email address you use for your LinkedIn account
+    const SCOPE_NETWORK            = 'r_network'; // Your 1st and 2nd degree connections
+    const SCOPE_CONTACT_INFO       = 'r_contactinfo'; // Address, phone number, and bound accounts
     const SCOPE_READ_WRITE_UPDATES = 'rw_nus'; // Retrieve and post updates to LinkedIn as you
-    const SCOPE_READ_WRITE_GROUPS = 'rw_groups'; // Retrieve and post group discussions as you
-    const SCOPE_WRITE_MESSAGES = 'w_messages'; // Send messages and invitations to connect as you
-    const SCOPE_WRITE_SHARE = 'w_share'; // Share url to your contacts
-    const HTTP_METHOD_GET = 'GET';
-    const HTTP_METHOD_POST = 'POST';
-    const HTTP_METHOD_PUT = 'PUT';
-    const HTTP_METHOD_DELETE = 'DELETE';
+    const SCOPE_READ_WRITE_GROUPS  = 'rw_groups'; // Retrieve and post group discussions as you
+    const SCOPE_WRITE_MESSAGES     = 'w_messages'; // Send messages and invitations to connect as you
+    const SCOPE_WRITE_SHARE        = 'w_share'; // Share url to your contacts
+    const HTTP_METHOD_GET          = 'GET';
+    const HTTP_METHOD_POST         = 'POST';
+    const HTTP_METHOD_PUT          = 'PUT';
+    const HTTP_METHOD_DELETE       = 'DELETE';
 
     /**
      * @param array $config (api_key, api_secret, callback_url)
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      */
-    public function __construct(array $config) {
-        $this->setConfig($config);
+    public function __construct(array $config)
+    {
         $this->media = static::LINKEDIN;
+        $this->setConfig($config);
+
         if (!extension_loaded('curl')) {
             throw new \RuntimeException('PHP CURL extension does not seem to be loaded');
         }
@@ -45,18 +47,20 @@ class LinkedIn extends SocialMedia implements SocialMediaInterface{
      * @param string $state - a unique identifier for this user, if none is passed, one is generated via uniqid
      * @return string $url
      */
-    public function getLoginUrl() {
+    public function getLoginUrl()
+    {
         $scope = implode('%20', $this->config->permissions);
 
         $state = uniqid('', true);
         $this->setState($state);
 
-        $url = self::OAUTH_BASE . "/authorization?response_type=code&client_id={$this->config->app_id}&scope={$scope}&state={$state}&redirect_uri=" . urlencode($this->config->redirect_url);
+        $url = self::OAUTH_BASE."/authorization?response_type=code&client_id={$this->config->app_id}&scope={$scope}&state={$state}&redirect_uri=".urlencode($this->config->redirect_url);
 
         return $url;
     }
 
-    public function getFields() {
+    public function getFields()
+    {
         $fullBasicProfile = array(
             'id',
             'first-name',
@@ -83,7 +87,8 @@ class LinkedIn extends SocialMedia implements SocialMediaInterface{
      * @throws \RuntimeException
      * @return string $access_token
      */
-    public function response() {
+    public function response()
+    {
 
         $authorization_code = $_REQUEST['code'];
 
@@ -102,9 +107,10 @@ class LinkedIn extends SocialMedia implements SocialMediaInterface{
         /** Temp bug fix as per https://developer.linkedin.com/comment/28938#comment-28938 * */
         $tmp_params = http_build_query($params);
 
-        $data = $this->_makeRequest(self::OAUTH_BASE . '/accessToken?' . $tmp_params, array(), self::HTTP_METHOD_POST, array('x-li-format: json'));
+        $data = $this->_makeRequest(self::OAUTH_BASE.'/accessToken?'.$tmp_params,
+            array(), self::HTTP_METHOD_POST, array('x-li-format: json'));
         if (isset($data['error']) && !empty($data['error'])) {
-            throw new \RuntimeException('Access Token Request Error: ' . $data['error'] . ' -- ' . $data['error_description']);
+            throw new \RuntimeException('Access Token Request Error: '.$data['error'].' -- '.$data['error_description']);
         }
 
         $this->setAccessToken($data['access_token']);
@@ -118,7 +124,8 @@ class LinkedIn extends SocialMedia implements SocialMediaInterface{
      *
      * @return int access token expiration time -
      */
-    public function getAccessTokenExpiration() {
+    public function getAccessTokenExpiration()
+    {
         return $this->_access_token_expires;
     }
 
@@ -129,7 +136,8 @@ class LinkedIn extends SocialMedia implements SocialMediaInterface{
      * @throws \InvalidArgumentException
      * @return \LinkedIn\LinkedIn
      */
-    public function setState($state) {
+    public function setState($state)
+    {
         $state = trim($state);
         if (empty($state)) {
             throw new \InvalidArgumentException('Invalid state. State should be a unique identifier for this user');
@@ -145,7 +153,8 @@ class LinkedIn extends SocialMedia implements SocialMediaInterface{
      *
      * @return string
      */
-    public function getState() {
+    public function getState()
+    {
         return $this->_state;
     }
 
@@ -156,7 +165,8 @@ class LinkedIn extends SocialMedia implements SocialMediaInterface{
      * @param array $payload
      * @return array
      */
-    public function post($endpoint, array $payload = array()) {
+    public function post($endpoint, array $payload = array())
+    {
         return $this->fetch($endpoint, $payload, self::HTTP_METHOD_POST);
     }
 
@@ -167,7 +177,8 @@ class LinkedIn extends SocialMedia implements SocialMediaInterface{
      * @param array $payload
      * @return array
      */
-    public function get($endpoint, array $payload = array()) {
+    public function get($endpoint, array $payload = array())
+    {
         return $this->fetch($endpoint, $payload);
     }
 
@@ -178,7 +189,8 @@ class LinkedIn extends SocialMedia implements SocialMediaInterface{
      * @param array $payload
      * @return array
      */
-    public function put($endpoint, array $payload = array()) {
+    public function put($endpoint, array $payload = array())
+    {
         return $this->fetch($endpoint, $payload, self::HTTP_METHOD_PUT);
     }
 
@@ -194,12 +206,16 @@ class LinkedIn extends SocialMedia implements SocialMediaInterface{
      * @param array $curl_options
      * @return array
      */
-    public function fetch($endpoint, array $payload = array(), $method = 'GET', array $headers = array(), array $curl_options = array()) {
-        $concat = (stristr($endpoint, '?') ? '&' : '?');
-        $endpoint = self::API_BASE . '/' . trim($endpoint, '/\\') . $concat . 'oauth2_access_token=' . $this->getAccessToken();
+    public function fetch($endpoint, array $payload = array(), $method = 'GET',
+                          array $headers = array(),
+                          array $curl_options = array())
+    {
+        $concat    = (stristr($endpoint, '?') ? '&' : '?');
+        $endpoint  = self::API_BASE.'/'.trim($endpoint, '/\\').$concat.'oauth2_access_token='.$this->getAccessToken();
         $headers[] = 'x-li-format: json';
 
-        return $this->_makeRequest($endpoint, $payload, $method, $headers, $curl_options);
+        return $this->_makeRequest($endpoint, $payload, $method, $headers,
+                $curl_options);
     }
 
     /**
@@ -207,7 +223,8 @@ class LinkedIn extends SocialMedia implements SocialMediaInterface{
      *
      * @return array
      */
-    public function getDebugInfo() {
+    public function getDebugInfo()
+    {
         return $this->_debug_info;
     }
 
@@ -222,7 +239,10 @@ class LinkedIn extends SocialMedia implements SocialMediaInterface{
      * @throws \RuntimeException
      * @return array
      */
-    protected function _makeRequest($url, array $payload = array(), $method = 'GET', array $headers = array(), array $curl_options = array()) {
+    protected function _makeRequest($url, array $payload = array(),
+                                    $method = 'GET', array $headers = array(),
+                                    array $curl_options = array())
+    {
         $ch = $this->_getCurlHandle();
 
         $options = array(
@@ -235,14 +255,15 @@ class LinkedIn extends SocialMedia implements SocialMediaInterface{
         );
 
         if (!empty($payload)) {
-            if ($options[CURLOPT_CUSTOMREQUEST] == self::HTTP_METHOD_POST || $options[CURLOPT_CUSTOMREQUEST] == self::HTTP_METHOD_PUT) {
-                $options[CURLOPT_POST] = true;
+            if ($options[CURLOPT_CUSTOMREQUEST] == self::HTTP_METHOD_POST || $options[CURLOPT_CUSTOMREQUEST]
+                == self::HTTP_METHOD_PUT) {
+                $options[CURLOPT_POST]       = true;
                 $options[CURLOPT_POSTFIELDS] = json_encode($payload);
-                $headers[] = 'Content-Length: ' . strlen($options[CURLOPT_POSTFIELDS]);
-                $headers[] = 'Content-Type: application/json';
+                $headers[]                   = 'Content-Length: '.strlen($options[CURLOPT_POSTFIELDS]);
+                $headers[]                   = 'Content-Type: application/json';
                 $options[CURLOPT_HTTPHEADER] = $headers;
             } else {
-                $options[CURLOPT_URL] .= '&' . http_build_query($payload, '&');
+                $options[CURLOPT_URL] .= '&'.http_build_query($payload, '&');
             }
         }
 
@@ -255,22 +276,25 @@ class LinkedIn extends SocialMedia implements SocialMediaInterface{
         }
 
         curl_setopt_array($ch, $options);
-        $response = curl_exec($ch);
+        $response          = curl_exec($ch);
         $this->_debug_info = curl_getinfo($ch);
 
         if ($response === false) {
-            throw new \RuntimeException('Request Error: ' . curl_error($ch));
+            throw new \RuntimeException('Request Error: '.curl_error($ch));
         }
 
         $response = json_decode($response, true);
-        if (isset($response['status']) && ($response['status'] < 200 || $response['status'] > 300)) {
-            throw new \RuntimeException('Request Error: ' . $response['message'] . '. Raw Response: ' . print_r($response, true));
+        if (isset($response['status']) && ($response['status'] < 200 || $response['status']
+            > 300)) {
+            throw new \RuntimeException('Request Error: '.$response['message'].'. Raw Response: '.print_r($response,
+                true));
         }
 
         return $response;
     }
 
-    protected function _getCurlHandle() {
+    protected function _getCurlHandle()
+    {
         if (!$this->_curl_handle) {
             $this->_curl_handle = curl_init();
         }
@@ -278,20 +302,22 @@ class LinkedIn extends SocialMedia implements SocialMediaInterface{
         return $this->_curl_handle;
     }
 
-    public function __destruct() {
+    public function __destruct()
+    {
         if ($this->_curl_handle) {
             curl_close($this->_curl_handle);
         }
     }
 
-    public function fetchUserInfo() {
+    public function fetchUserInfo()
+    {
         $getAllFields = $this->getFields();
-        $this->user = $info = $this->get('/people/~:(' . $getAllFields . ')');
+        $this->user   = $info         = $this->get('/people/~:('.$getAllFields.')');
         return $this;
     }
 
-    public function handler() {
+    public function handler()
+    {
         return $this;
     }
-
 }
