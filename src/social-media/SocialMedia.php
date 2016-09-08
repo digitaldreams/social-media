@@ -154,7 +154,7 @@ class SocialMedia
         }
     }
 
-    public static function call()
+    public function call()
     {
         try {
             if ($token = $this->hasAccessToken()) {
