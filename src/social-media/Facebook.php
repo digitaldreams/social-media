@@ -56,7 +56,7 @@ class Facebook extends SocialMedia implements SocialMediaInterface
 // Exchanges a short-lived access token for a long-lived one
             $longLivedAccessToken = $oAuth2Client->getLongLivedAccessToken($accessToken);
             $this->setAccessToken($accessToken);
-          
+
             $this->saveRefreshToken($longLivedAccessToken);
 
             // Now you can redirect to another page and use the
@@ -111,6 +111,27 @@ class Facebook extends SocialMedia implements SocialMediaInterface
 
         } catch (\Exception $ex) {
             return false;
+        }
+    }
+
+    public function getUser()
+    {
+        $retUser = [];
+        $user    = $this->getRawUser();
+        if (!empty($user)) {
+            $retUser['id']            = isset($user['id']) ? $user['id'] : NULL;
+            $retUser['first_name']    = isset($user['first_name']) ? $user['first_name']
+                    : NULL;
+            $retUser['last_name']     = isset($user['last_name']) ? $user['last_name']
+                    : NULL;
+            $retUser['full_name']     = $retUser['first_name'].' '.$retUser['last_name'];
+            $retUser['email_address'] = isset($user['email']) ? $user['email'] : NULL;
+            $retUser['gender']        = isset($user['gender']) ? $user['gender']
+                    : NULL;
+            $retUser['link']          = isset($user['link']) ? $user['link'] : NULL;
+            $retUser['picture']       = NULL;
+            $retUser['locale']        = isset($user['locale']) ? $user['locale']
+                    : NULL;
         }
     }
 }

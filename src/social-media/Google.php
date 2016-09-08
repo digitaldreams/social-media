@@ -218,4 +218,26 @@ class Google extends SocialMedia implements SocialMediaInterface
             return false;
         }
     }
+
+    public function getUser()
+    {
+        $retUser = [];
+        $user    = $this->getRawUser();
+        if (!empty($user)) {
+            $retUser['id']            = isset($user['id']) ? $user['id'] : NULL;
+            $retUser['first_name']    = isset($user['givenName']) ? $user['givenName']
+                    : NULL;
+            $retUser['last_name']     = isset($user['familyName']) ? $user['familyName']
+                    : NULL;
+            $retUser['full_name']     = isset($user['name']) ? $user['name'] : NULL;
+            $retUser['email_address'] = isset($user['email']) ? $user['email'] : NULL;
+            $retUser['gender']        = isset($user['gender']) ? $user['gender']
+                    : NULL;
+            $retUser['link']          = isset($user['link']) ? $user['link'] : NULL;
+            $retUser['picture']       = isset($user['picture']) ? $user['picture']
+                    : NULL;
+            $retUser['locale']        = isset($user['locale']) ? $user['locale']
+                    : NULL;
+        }
+    }
 }

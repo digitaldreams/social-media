@@ -27,4 +27,21 @@ interface SocialMediaInterface
     public function isExpired();
 
     public function getNewAccessToken();
+
+    /**
+     * @return array
+     * [
+     * id=>
+     * first_name=>
+     * last_name=>
+     * full_name=>
+     * email_address=>
+     * gender=>
+     * link=>
+     * locale=>
+     * picture=>
+     *
+     * ]
+     */
+    public function getUser();
 }

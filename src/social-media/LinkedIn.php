@@ -344,4 +344,26 @@ class LinkedIn extends SocialMedia implements SocialMediaInterface
             return false;
         }
     }
+
+    public function getUser()
+    {
+        $retUser = [];
+        $user    = $this->getRawUser();
+        if (!empty($user)) {
+            $retUser['id']            = isset($user['id']) ? $user['id'] : NULL;
+            $retUser['first_name']    = isset($user['firstName']) ? $user['firstName']
+                    : NULL;
+            $retUser['last_name']     = isset($user['lastName']) ? $user['lastName']
+                    : NULL;
+            $retUser['full_name']     = $retUser['first_name'].' '.$retUser['last_name'];
+            $retUser['email_address'] = isset($user['emailAddress']) ? $user['emailAddress']
+                    : NULL;
+            $retUser['gender']        = NULL;
+            $retUser['link']          = isset($user['publicProfileUrl']) ? $user['publicProfileUrl']
+                    : NULL;
+            $retUser['picture']       = isset($user['pictureUrl']) ? $user['pictureUrl']
+                    : NULL;
+            $retUser['locale']        = isset($user['']) ? $user[''] : NULL;
+        }
+    }
 }

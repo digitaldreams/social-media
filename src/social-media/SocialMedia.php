@@ -102,7 +102,7 @@ class SocialMedia
         }
     }
 
-    public function getUser()
+    public function getRawUser()
     {
         return $this->user;
     }
