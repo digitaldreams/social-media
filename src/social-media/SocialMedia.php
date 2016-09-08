@@ -46,6 +46,11 @@ class SocialMedia
 
     /**
      *
+     */
+    protected $helper;
+
+    /**
+     *
      * @var stdClass
      * {
      * app_id
@@ -56,6 +61,12 @@ class SocialMedia
      */
     public $config;
     protected $access_token;
+
+    /**
+     * When an accesstoken expire then it will used to get an new access token.
+     * @var type
+     */
+    protected $refresh_token;
 
     public function setConfig(array $config)
     {
@@ -80,6 +91,7 @@ class SocialMedia
             } else {
                 $this->model = new Model($this->media);
             }
+            $this->helper = new Model($this->media);
 
             $this->config->app_id       = $config['app_id'];
             $this->config->app_secret   = $config['app_secret'];
@@ -95,9 +107,24 @@ class SocialMedia
         return $this->user;
     }
 
+    public function hasAccessToken()
+    {
+        if (method_exists($this->model, 'hasAccessToken')) {
+            return $this->model->hasAccessToken();
+        } else {
+            return $this->helper->hasAccessToken();
+        }
+    }
+
     public function getAccessToken()
     {
-        return $this->model->getAccessToken();
+        if (!empty($this->access_token)) {
+            return $this->access_token;
+        } elseif (method_exists($this->model, 'getAccessToken')) {
+            return $this->model->getAccessToken();
+        } else {
+            return $this->helper->getAccessToken();
+        }
     }
 
     public function setAccessToken($token)
@@ -106,18 +133,43 @@ class SocialMedia
         $this->access_token = $token;
     }
 
-    public function hasAccessToken()
-    {
-        return $this->model->hasAccessToken();
-    }
-
     /**
-     * Save Access Token for further use. Save this to a permanent storage so that when web page reload or change then it can be retrivable 
-     * @param string $accessToken Access Token 
+     * Save Access Token for further use. Save this to a permanent storage so that when web page reload or change then it can be retrivable
+     * @param string $accessToken Access Token
      */
     public function saveAccessToken($token)
     {
-        return $this->model->saveAccessToken($token);
+        if (method_exists($this->model, 'saveAccessToken')) {
+            return $this->model->saveAccessToken($token);
+        } else {
+            return $this->helper->saveAccessToken($token);
+        }
+    }
+
+    public function getRefreshToken()
+    {
+        if (!empty($this->refresh_token)) {
+            return $this->refresh_token;
+        } elseif (method_exists($this->model, 'getRefreshToken')) {
+            return $this->model->getRefreshToken();
+        } else {
+            return $this->helper->getRefreshToken();
+        }
+    }
+
+    public function setRefreshToken($token)
+    {
+        $this->saveRefreshToken($token);
+        $this->refresh_token = $token;
+    }
+
+    public function saveRefreshToken($token)
+    {
+        if (method_exists($this->model, 'saveRefreshToken')) {
+            return $this->model->saveRefreshToken($token);
+        } else {
+            return $this->helper->saveRefreshToken($token);
+        }
     }
 
     public function success()
@@ -158,15 +210,28 @@ class SocialMedia
     {
         try {
             if ($token = $this->hasAccessToken()) {
-
+                print_r($token);
+                exit();
                 return $this->setTokenToHandler($token)->fetchUserInfo();
-            } elseif (isset($_REQUEST['code']) && !empty($_REQUEST['code'])) {
+            }
+            if (isset($_REQUEST['code']) && !empty($_REQUEST['code'])) {
 
                 return $this->response()->fetchUserInfo();
-            }
-            return false;
+            } else {
+                return false;
+            };
         } catch (\Exception $ex) {
+            // $this->forget();
             throw new \Exception($ex->getMessage(), $ex->getCode(), $ex);
+        }
+    }
+
+    public function forget()
+    {
+        if (method_exists($this->model, 'forgetStorage')) {
+            return $this->model->forgetStorage();
+        } else {
+            return $this->helper->forgetStorage();
         }
     }
 }

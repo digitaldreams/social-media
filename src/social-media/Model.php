@@ -44,6 +44,17 @@ class Model
         return $_SESSION[$this->media.'_access_token'] = $token;
     }
 
+    public function saveRefreshToken($token)
+    {
+        return $_SESSION[$this->media.'_refresh_token'] = $token;
+    }
+
+    public function getRefreshToken($token)
+    {
+        return isset($_SESSION[$this->media.'_refresh_token']) ? $_SESSION[$this->media.'_refresh_token']
+                : FALSE;
+    }
+
     /**
      *
      * @param \SocialMedia $socialMedia
@@ -60,5 +71,14 @@ class Model
     public function smFail($socialMedia)
     {
 
+    }
+
+    public function forgetStorage()
+    {
+        if (isset($_SESSION[$this->media.'_access_token'])) {
+            unset($_SESSION[$this->media.'_access_token']);
+            return true;
+        }
+        return false;
     }
 }

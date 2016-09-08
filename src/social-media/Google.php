@@ -104,6 +104,7 @@ class Google extends SocialMedia implements SocialMediaInterface
             $this->client->authenticate($code);
             $accessToken = $this->client->getAccessToken();
             $this->setAccessToken($accessToken);
+            $this->saveRefreshToken($this->client->getRefreshToken());
         } else {
             $this->setError('Code is not defined yet');
         }
@@ -203,5 +204,18 @@ class Google extends SocialMedia implements SocialMediaInterface
     {
         $this->client->setAccessToken($token);
         return $this;
+    }
+
+    public function getNewAccessToken()
+    {
+        try {
+            $refreshToken = $this->getRefreshToken();
+            if (!empty($refreshToken)) {
+                return $this->client->fetchAccessTokenWithRefreshToken($refreshToken);
+            }
+            return false;
+        } catch (\Exception $ex) {
+            return false;
+        }
     }
 }

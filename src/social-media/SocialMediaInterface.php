@@ -23,4 +23,8 @@ interface SocialMediaInterface
     public function handler();
 
     public function setTokenToHandler($token);
+
+    public function isExpired();
+
+    public function getNewAccessToken();
 }

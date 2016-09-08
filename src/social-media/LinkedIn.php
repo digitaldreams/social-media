@@ -326,4 +326,22 @@ class LinkedIn extends SocialMedia implements SocialMediaInterface
         $this->setAccessToken($token);
         return $this;
     }
+
+    public function isExpired()
+    {
+        try {
+
+        } catch (\Exception $ex) {
+            return false;
+        }
+    }
+
+    public function getNewAccessToken()
+    {
+        try {
+
+        } catch (\Exception $ex) {
+            return false;
+        }
+    }
 }

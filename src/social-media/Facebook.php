@@ -55,7 +55,9 @@ class Facebook extends SocialMedia implements SocialMediaInterface
 
 // Exchanges a short-lived access token for a long-lived one
             $longLivedAccessToken = $oAuth2Client->getLongLivedAccessToken($accessToken);
-            $this->setAccessToken($longLivedAccessToken);
+            $this->setAccessToken($accessToken);
+            
+            $this->saveRefreshToken($longLivedAccessToken);
 
             // Now you can redirect to another page and use the
             // access token from $_SESSION['facebook_access_token']
@@ -92,5 +94,23 @@ class Facebook extends SocialMedia implements SocialMediaInterface
     public function handler()
     {
         return $this->fb;
+    }
+
+    public function isExpired()
+    {
+        try {
+            
+        } catch (\Exception $ex) {
+            return false;
+        }
+    }
+
+    public function getNewAccessToken()
+    {
+        try {
+
+        } catch (\Exception $ex) {
+            return false;
+        }
     }
 }
