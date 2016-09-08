@@ -133,5 +133,6 @@ class Facebook extends SocialMedia implements SocialMediaInterface
             $retUser['locale']        = isset($user['locale']) ? $user['locale']
                     : NULL;
         }
+        return $retUser;
     }
 }

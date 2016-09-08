@@ -365,5 +365,6 @@ class LinkedIn extends SocialMedia implements SocialMediaInterface
                     : NULL;
             $retUser['locale']        = isset($user['']) ? $user[''] : NULL;
         }
+        return $retUser;
     }
 }
