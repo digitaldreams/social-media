@@ -15,18 +15,18 @@
     ],
     "require": {
         "php": ">=5.5.0",
-        "facebook/php-sdk-v4": "~5.0"
-       
+        "facebook/graph-sdk": "5.3.*"
+
 
     },
-    "require-dev":{
-         "google/apiclient":"dev-master"  
+    "require-dev": {
+        "google/apiclient": "dev-master"
     },
     "autoload": {
         "psr-4": {
             "SocialMedia\\": "src/social-media/"
         }
     },
-    "minimum-stability" : "dev",
+    "minimum-stability": "dev",
     "prefer-stable": true
 }
