@@ -16,13 +16,13 @@ Social Media login and registration are now common in almost all website. But it
 
   $facebook = new \SocialMedia\Facebook([
   
-            'app_id' => 'xxxxxxxxxxxxxxxxxxxxx',
+    'app_id' => 'xxxxxxxxxxxxxxxxxxxxx',
             
-            'app_secret' => 'xxxxxxxxxxxxxxxxxxxxxxxxxx',
+    'app_secret' => 'xxxxxxxxxxxxxxxxxxxxxxxxxx',
             
-            'redirect_url' => 'http://example.com/facebook-response.php',
+     'redirect_url' => 'http://example.com/facebook-response.php',
             
-            'permissions' => ['public_profile', 'email'],
+     'permissions' => ['public_profile', 'email'],
             
         ]);
         
@@ -34,17 +34,17 @@ Social Media login and registration are now common in almost all website. But it
 
    try {
    
-         $facebook = new \SocialMedia\Facebook([
+      $facebook = new \SocialMedia\Facebook([
          
-              'app_id' => 'xxxxxxxxxxxxxxxxxxx',
+        'app_id' => 'xxxxxxxxxxxxxxxxxxx',
               
-              'app_secret' => 'xxxxxxxxxxxxxxxxxxx',
+         'app_secret' => 'xxxxxxxxxxxxxxxxxxx',
               
-              'redirect_url' => 'http://example.com/facebook-response.php',
+          'redirect_url' => 'http://example.com/facebook-response.php',
               
-                'permissions' => ['public_profile', 'email'],
+           'permissions' => ['public_profile', 'email'],
                 
-            ]);
+          ]);
             
             $facebook->response();
             
